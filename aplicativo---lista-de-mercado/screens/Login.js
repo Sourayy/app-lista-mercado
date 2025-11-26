@@ -6,25 +6,80 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Alert,
-  Button, // ✅ importar Button
+  Button,
+  Alert, 
 } from 'react-native';
+
+import firebase from 'firebase';
+import 'firebase/firestore';
+import 'firebase/auth'; 
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDwG_CGPqZBAOYOrhw3T0NdaggM9t90IVE",
+  authDomain: "foodlist-72577.firebaseapp.com",
+  projectId: "foodlist-72577",
+  storageBucket: "foodlist-72577.firebasestorage.app",
+  messagingSenderId: "94455084786",
+  appId: "1:94455084786:web:c8181c1d60cc9181eb026b",
+  measurementId: "G-KJYQSZPE91"
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 export default function Login({ irParaCadastro, irParaHome }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [erroLogin, setErroLogin] = useState("");
 
   const verificarLogin = () => {
+    setErroLogin("");
+
     if (!email || !senha) {
-      return Alert.alert('Erro', 'Preencha e-mail e senha');
+      return setErroLogin("Preencha e-mail e senha");
     }
     if (!email.includes('@') || !email.includes('.')) {
-      return Alert.alert('Erro', 'Digite um e-mail válido');
+      return setErroLogin("Digite um e-mail válido");
     }
 
-    console.log('Login realizado:', { email, senha });
-    irParaHome(); // navega para Home
+    firebase.auth()
+      .signInWithEmailAndPassword(email, senha)
+      .then(() => {
+        irParaHome();
+      })
+      .catch((erro) => {
+        console.log("Erro no login:", erro.code);
+
+        if (erro.code === "auth/user-not-found") {
+          return setErroLogin("Usuário não encontrado");
+        }
+        if (erro.code === "auth/wrong-password") {
+          return setErroLogin("Senha incorreta");
+        }
+
+        setErroLogin("Não foi possível fazer login");
+      });
+  };
+
+  const recuperarSenha = () => {
+    if (!email) {
+      return alert("Digite seu e-mail acima para recuperar a senha.");
+    }
+
+    firebase.auth()
+      .sendPasswordResetEmail(email)
+      .then(() => {
+        alert("Um link de recuperação foi enviado para o seu e-mail.");
+      })
+      .catch((erro) => {
+        if (erro.code === "auth/user-not-found") {
+          return alert("Esse e-mail não está registrado.");
+        }
+
+        alert("Não foi possível enviar o e-mail de recuperação.");
+      });
   };
 
   return (
@@ -53,25 +108,33 @@ export default function Login({ irParaCadastro, irParaHome }) {
       />
 
       <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
-        <Text style={styles.olho}>
+        <Text style={styles.mostrar}>
           {mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
         </Text>
       </TouchableOpacity>
 
-      {/* BOTÃO ENTRAR — rosa */}
       <View style={{ marginTop: 15 }}>
         <Button
           title="Entrar"
           color="#fe999c"
-          onPress={verificarLogin} // chama a função que navega
+          onPress={verificarLogin}
         />
       </View>
 
+      {erroLogin !== "" && (
+        <Text style={styles.erroTexto}>{erroLogin}</Text>
+      )}
+
       <TouchableOpacity onPress={irParaCadastro}>
-        <Text style={styles.link}>Ainda não tem conta? Cadastre-se</Text>
+        <Text style={styles.link}>{'\n'}Ainda não tem conta? Cadastre-se</Text>
+      </TouchableOpacity>
+       <TouchableOpacity onPress={recuperarSenha}>
+
+        <Text style={styles.recuperar}>{'\n'}Esqueci minha senha</Text>
       </TouchableOpacity>
     </View>
   );
+ 
 }
 
 const styles = StyleSheet.create({
@@ -89,7 +152,9 @@ const styles = StyleSheet.create({
     borderColor: '#e3e3e3',
     borderRadius: 5,
     padding: 12,
-    marginBottom: 10,
+    marginBottom: 4,
+    fontSize: 16,
+    fontFamily: 'serif',
   },
   subtitulos: {
     fontSize: 17,
@@ -106,10 +171,26 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'serif',
   },
-  olho: {
+  mostrar: {
     color: '#fe999c',
     textAlign: 'right',
     marginBottom: 15,
-    fontSize: 12,
+    fontSize: 14,
+    fontFamily: 'serif',
+  },
+  erroTexto: {
+    color: '#fe999c',
+    textAlign: 'center',
+    marginTop: 15,
+    fontSize: 14,
+    fontWeight: 'bold',
+    fontFamily: 'serif',
+  },
+  recuperar: {
+    color: '#fe999c',
+    textAlign: 'center',
+    marginBottom: 10,
+    fontSize: 15,
+    fontFamily: 'serif',
   },
 });
