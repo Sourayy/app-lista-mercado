@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Button,
+  Alert,
+} from 'react-native';
 
 import firebase from 'firebase';
 import 'firebase/firestore';
-
+import 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDwG_CGPqZBAOYOrhw3T0NdaggM9t90IVE",
@@ -20,8 +28,9 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.firestore(); 
+const auth = firebase.auth();
 
-const App = () => {
+const Cadastro = ({ irParaLogin, irParaHome }) => {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -39,23 +48,34 @@ const App = () => {
     }
 
     try {
-      await db.collection("usuarios").add({
+
+      const userCredential = await auth.createUserWithEmailAndPassword(email, senha);
+      const user = userCredential.user;
+
+      
+      await db.collection("usuarios").doc(user.uid).set({
         nome: nome,
         email: email,
-        senha: senha,
         criadoEm: firebase.firestore.FieldValue.serverTimestamp()
       });
-
-      Alert.alert("Sucesso", "Usuário cadastrado no Firebase!");
 
       setNome("");
       setEmail("");
       setSenha("");
       setConfirmarSenha("");
 
+      irParaHome();
+
     } catch (error) {
       console.log(error);
-      Alert.alert("Erro", "Não foi possível cadastrar.");
+
+      let msg = "Erro ao cadastrar.";
+
+      if (error.code === "auth/email-already-in-use") msg = "E-mail já está cadastrado.";
+      if (error.code === "auth/invalid-email") msg = "Digite um e-mail válido.";
+      if (error.code === "auth/weak-password") msg = "A senha precisa ter pelo menos 6 caracteres.";
+
+      Alert.alert("Erro", msg);
     }
   };
 
@@ -63,7 +83,7 @@ const App = () => {
     <View style={styles.container}>
       <Text style={styles.titulo}>Cadastro</Text>
       
-      <Text style={styles.subtitulos}>Nome{'\n'}</Text>
+      <Text style={styles.subtitulos}>Nome</Text>
       <TextInput
         style={styles.input}
         value={nome}
@@ -72,7 +92,7 @@ const App = () => {
         placeholderTextColor="#e3e3e3"
       />
 
-      <Text style={styles.subtitulos}>E-mail{'\n'}</Text>
+      <Text style={styles.subtitulos}>E-mail</Text>
       <TextInput
         style={styles.input}
         value={email}
@@ -82,7 +102,7 @@ const App = () => {
         keyboardType="email-address"
       />
 
-      <Text style={styles.subtitulos}>Senha{'\n'}</Text>
+      <Text style={styles.subtitulos}>Senha</Text>
       <View>
         <TextInput
           style={styles.input}
@@ -94,12 +114,12 @@ const App = () => {
         />
         <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
           <Text style={styles.olho}>
-            {mostrarSenha ? '👁️ Ocultar senha' : '👁️ Mostrar senha'}
+            {mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'}
           </Text>
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.subtitulos}>Confirme sua senha{'\n'}</Text>
+      <Text style={styles.subtitulos}>Confirme sua senha</Text>
       <View>
         <TextInput
           style={styles.input}
@@ -111,16 +131,20 @@ const App = () => {
         />
         <TouchableOpacity onPress={() => setMostrarConfirmar(!mostrarConfirmar)}>
           <Text style={styles.olho}>
-            {mostrarConfirmar ? '👁️ Ocultar senha' : '👁️ Mostrar senha'}
+            {mostrarConfirmar ? 'Ocultar senha' : 'Mostrar senha'}
           </Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.botoes}>
-        <Button title="Cadastre-se" color="#fe999c" onPress={verificarCadastro} />
+      <View style={{ marginTop: 15 }}>
+        <Button
+          title="Cadastre-se"
+          color="#fe999c"
+          onPress={verificarCadastro}
+        />
       </View>
 
-      <TouchableOpacity>
+      <TouchableOpacity onPress={irParaLogin}>
         <Text style={styles.link}>{'\n'}Já possui uma conta? Faça Login.</Text>
       </TouchableOpacity>
     </View>
@@ -150,24 +174,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'serif',
   },
-  botoes: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#fe999c',
-    paddingVertical: 10,
-    paddingHorizontal: 25,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginHorizontal: 5,
-    marginBottom: 5,
-  },
   subtitulos: {
     fontSize: 17,
-    textAlign: 'center',
+    textAlign: 'left',
     marginTop: 10,
     fontWeight: 'bold',
-    fontFamily: 'serif',
     color: '#e3e3e3',
+    fontFamily: 'serif',
   },
   link: {
     color: '#fe999c',
@@ -180,9 +193,9 @@ const styles = StyleSheet.create({
     color: '#fe999c',
     textAlign: 'right',
     marginBottom: 15,
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: 'serif',
   },
 });
 
-export default App;
+export default Cadastro;
