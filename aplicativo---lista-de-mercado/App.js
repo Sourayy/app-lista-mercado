@@ -30,8 +30,7 @@ export default function App() {
       )}
 
       {tela === 'cadastro' && (
-        <Cadastro
-          navigation={{ navigate: () => irParaLogin() }} // substitui navigation.navigate
+        <Cadastro irParaLogin={irParaLogin} irParaHome={() => setTela("home")} 
         />
       )}
 
