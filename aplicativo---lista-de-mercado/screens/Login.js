@@ -28,40 +28,44 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
+const auth = firebase.auth();
+
 export default function Login({ irParaCadastro, irParaHome }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [erroLogin, setErroLogin] = useState("");
+const verificarLogin = async () => {
+  const emailLimpo = email.trim();
+  const senhaLimpa = senha.trim();
 
-  const verificarLogin = () => {
-    setErroLogin("");
+  if (!emailLimpo || !senhaLimpa) {
+    return setErroLogin("Preencha todos os campos.");
+  }
 
-    if (!email || !senha) {
-      return setErroLogin("Preencha e-mail e senha");
-    }
-    if (!email.includes('@') || !email.includes('.')) {
-      return setErroLogin("Digite um e-mail válido");
-    }
+  auth
+    .signInWithEmailAndPassword(emailLimpo, senhaLimpa)
+    .then(() => {
+      irParaHome();
+    })
+    .catch((erro) => {
+      console.log("Erro no login:", erro.code);
 
-    firebase.auth()
-      .signInWithEmailAndPassword(email, senha)
-      .then(() => {
-        irParaHome();
-      })
-      .catch((erro) => {
-        console.log("Erro no login:", erro.code);
-
-        if (erro.code === "auth/user-not-found") {
-          return setErroLogin("Usuário não encontrado");
-        }
-        if (erro.code === "auth/wrong-password") {
-          return setErroLogin("Senha incorreta");
-        }
-
-        setErroLogin("Não foi possível fazer login");
-      });
-  };
+      if (erro.code === "auth/user-not-found") {
+        return setErroLogin("Usuário não encontrado");
+      }
+      if (erro.code === "auth/wrong-password") {
+        return setErroLogin("Senha incorreta");
+      }
+      if (erro.code === "auth/invalid-email") {
+        return setErroLogin("E-mail inválido");
+      }
+      if (erro.code === "auth/internal-error") {
+        return setErroLogin("Dados inválidos. Verifique e tente novamente.");
+      }
+      return setErroLogin("Não foi possível fazer login.");
+    });
+};
 
   const recuperarSenha = () => {
     if (!email) {
@@ -85,26 +89,30 @@ export default function Login({ irParaCadastro, irParaHome }) {
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Login</Text>
-
       <Text style={styles.subtitulos}>E-mail</Text>
       <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Digite seu e-mail"
-        placeholderTextColor="#e3e3e3"
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+      style={styles.input}
+      value={email}
+      onChangeText={(t) => {
+      setEmail(t);
+      setErroLogin("");
+    }}
+      placeholder="Digite seu e-mail"
+      placeholderTextColor="#e3e3e3"
+      keyboardType="email-address"
+    />
 
-      <Text style={styles.subtitulos}>Senha</Text>
-      <TextInput
-        style={styles.input}
-        secureTextEntry={!mostrarSenha}
-        value={senha}
-        onChangeText={setSenha}
-        placeholder="Digite sua senha"
-        placeholderTextColor="#e3e3e3"
+     <Text style={styles.subtitulos}>Senha</Text>
+     <TextInput
+      style={styles.input}
+      secureTextEntry={!mostrarSenha}
+      value={senha}
+      onChangeText={(t) => {
+      setSenha(t);
+      setErroLogin("");
+       }}
+      placeholder="Digite sua senha"
+      placeholderTextColor="#e3e3e3"
       />
 
       <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
