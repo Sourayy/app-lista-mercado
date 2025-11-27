@@ -27,7 +27,7 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
-const db = firebase.firestore(); 
+const db = firebase.firestore();
 const auth = firebase.auth();
 
 const Cadastro = ({ irParaLogin, irParaHome }) => {
@@ -37,26 +37,28 @@ const Cadastro = ({ irParaLogin, irParaHome }) => {
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfirmar, setMostrarConfirmar] = useState(false);
+  const [erroLogin, setErroLogin] = useState("");
 
   const verificarCadastro = async () => {
     if (!nome || !email || !senha || !confirmarSenha) {
-      return Alert.alert("Atenção", "Preencha todos os campos.");
+      return setErroLogin("Atenção! Preencha todos os campos.");
     }
 
     if (senha !== confirmarSenha) {
-      return Alert.alert("Erro", "As senhas não coincidem!");
+      return setErroLogin("As senhas não coincidem!");
     }
+    if (nome.trim().length < 3) {
+       return setErroLogin("Digite um nome válido (mínimo 3 letras).");
+}
 
     try {
-
       const userCredential = await auth.createUserWithEmailAndPassword(email, senha);
       const user = userCredential.user;
 
-      
       await db.collection("usuarios").doc(user.uid).set({
         nome: nome,
         email: email,
-        criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+        criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
       });
 
       setNome("");
@@ -69,25 +71,29 @@ const Cadastro = ({ irParaLogin, irParaHome }) => {
     } catch (error) {
       console.log(error);
 
-      let msg = "Erro ao cadastrar.";
+      if (error.code === "auth/email-already-in-use") 
+        return setErroLogin("E-mail já está cadastrado.");
+      if (error.code === "auth/invalid-email") 
+        return setErroLogin("Digite um e-mail válido.");
+      if (error.code === "auth/weak-password") 
+        return setErroLogin("A senha precisa conter pelo menos 6 caracteres.");
 
-      if (error.code === "auth/email-already-in-use") msg = "E-mail já está cadastrado.";
-      if (error.code === "auth/invalid-email") msg = "Digite um e-mail válido.";
-      if (error.code === "auth/weak-password") msg = "A senha precisa ter pelo menos 6 caracteres.";
-
-      Alert.alert("Erro", msg);
+      return setErroLogin("Erro inesperado. Tente novamente.");
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Cadastro</Text>
-      
+
       <Text style={styles.subtitulos}>Nome</Text>
       <TextInput
         style={styles.input}
         value={nome}
-        onChangeText={setNome}
+        onChangeText={(t) => {
+          setNome(t);
+          setErroLogin("");
+        }}
         placeholder="Digite seu nome"
         placeholderTextColor="#e3e3e3"
       />
@@ -96,7 +102,10 @@ const Cadastro = ({ irParaLogin, irParaHome }) => {
       <TextInput
         style={styles.input}
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(t) => {
+          setEmail(t);
+          setErroLogin("");
+        }}
         placeholder="Digite seu e-mail"
         placeholderTextColor="#e3e3e3"
         keyboardType="email-address"
@@ -108,7 +117,10 @@ const Cadastro = ({ irParaLogin, irParaHome }) => {
           style={styles.input}
           secureTextEntry={!mostrarSenha}
           value={senha}
-          onChangeText={setSenha}
+          onChangeText={(t) => {
+            setSenha(t);
+            setErroLogin("");
+          }}
           placeholder="Digite sua senha"
           placeholderTextColor="#e3e3e3"
         />
@@ -125,7 +137,10 @@ const Cadastro = ({ irParaLogin, irParaHome }) => {
           style={styles.input}
           secureTextEntry={!mostrarConfirmar}
           value={confirmarSenha}
-          onChangeText={setConfirmarSenha}
+          onChangeText={(t) => {
+            setConfirmarSenha(t);
+            setErroLogin("");
+          }}
           placeholder="Confirme sua senha"
           placeholderTextColor="#e3e3e3"
         />
@@ -143,6 +158,10 @@ const Cadastro = ({ irParaLogin, irParaHome }) => {
           onPress={verificarCadastro}
         />
       </View>
+
+      {erroLogin !== "" && (
+        <Text style={styles.erroTexto}>{erroLogin}</Text>
+      )}
 
       <TouchableOpacity onPress={irParaLogin}>
         <Text style={styles.link}>{'\n'}Já possui uma conta? Faça Login.</Text>
@@ -194,6 +213,14 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginBottom: 15,
     fontSize: 14,
+    fontFamily: 'serif',
+  },
+  erroTexto: {
+    color: '#fe999c',
+    textAlign: 'center',
+    marginTop: 15,
+    fontSize: 14,
+    fontWeight: 'bold',
     fontFamily: 'serif',
   },
 });
