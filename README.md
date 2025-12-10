@@ -17,7 +17,7 @@ Aplicativo de organização de lista de compras de mercado, simples, divertido e
 Baixe e instale o aplicativo diretamente no seu dispositivo Android:
 
 📦 **Download do APK:**  
-👉 [Clique aqui para baixar o Foodlist (.apk)](https://expo.dev/artifacts/eas/gXHUpZmMC8hhFyhefVvzV3.apk)
+👉 [Clique aqui para baixar o Foodlist (.apk)](https://expo.dev/artifacts/eas/uVXzkhhM4Z8TRZRyVcTApA.apk)
 
 ---
 
