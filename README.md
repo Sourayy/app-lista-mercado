@@ -95,6 +95,28 @@ Isso cria uma gamificação divertida e incentiva o uso contínuo do app.
 
 ---
 
+## 🔥 **Integração com Firebase**
+
+O projeto conta com integração ao **Firebase**, utilizada para garantir mais segurança e praticidade ao usuário. As funcionalidades configuradas são:
+
+### **🔐 Authentication**
+Usada para login e cadastro de usuários com **e-mail e senha**, permitindo que cada pessoa tenha acesso seguro às suas próprias listas.
+
+### **🗂️ Firestore Database**
+Responsável por **salvar, carregar e atualizar** as listas de compras.  
+O Firestore permite armazenamento dinâmico e sincronizado, garantindo que os dados estejam sempre disponíveis.
+
+### **⚙️ Configuração**
+A inicialização do Firebase foi feita através de um arquivo de configuração dedicado no projeto, utilizando as credenciais fornecidas pelo Firebase.
+
+### **📌 Status**
+Toda a integração está **funcionando corretamente**, permitindo:
+- Criar e autenticar usuários  
+- Salvar listas no Firestore  
+- Buscar e atualizar dados sem erros
+
+---
+
 ## 📦 **Como Executar o Projeto**
 ```bash
 # Clone este repositório
