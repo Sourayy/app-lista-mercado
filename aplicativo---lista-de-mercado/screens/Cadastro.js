@@ -7,21 +7,24 @@ import {
   TouchableOpacity,
   Button,
   Alert,
+  Image,
 } from 'react-native';
 
-import firebase from 'firebase';
-import 'firebase/firestore';
-import 'firebase/auth';
+import Logo from '../assets/Logo.png';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyDwG_CGPqZBAOYOrhw3T0NdaggM9t90IVE",
   authDomain: "foodlist-72577.firebaseapp.com",
   projectId: "foodlist-72577",
-  storageBucket: "foodlist-72577.firebasestorage.app",
+  storageBucket: "foodlist-72577.appspot.com",
   messagingSenderId: "94455084786",
   appId: "1:94455084786:web:c8181c1d60cc9181eb026b",
   measurementId: "G-KJYQSZPE91"
 };
+
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
@@ -84,6 +87,9 @@ const Cadastro = ({ irParaLogin, irParaHome }) => {
 
   return (
     <View style={styles.container}>
+    <View style={styles.logoContainer}>
+        <Image source={Logo} style={styles.logo} />
+    </View>
       <Text style={styles.titulo}>Cadastro</Text>
 
       <Text style={styles.subtitulos}>Nome</Text>
@@ -95,7 +101,7 @@ const Cadastro = ({ irParaLogin, irParaHome }) => {
           setErroLogin("");
         }}
         placeholder="Digite seu nome"
-        placeholderTextColor="#e3e3e3"
+        placeholderTextColor='#b5b5b5'
       />
 
       <Text style={styles.subtitulos}>E-mail</Text>
@@ -107,7 +113,7 @@ const Cadastro = ({ irParaLogin, irParaHome }) => {
           setErroLogin("");
         }}
         placeholder="Digite seu e-mail"
-        placeholderTextColor="#e3e3e3"
+        placeholderTextColor='#b5b5b5'
         keyboardType="email-address"
       />
 
@@ -122,7 +128,7 @@ const Cadastro = ({ irParaLogin, irParaHome }) => {
             setErroLogin("");
           }}
           placeholder="Digite sua senha"
-          placeholderTextColor="#e3e3e3"
+          placeholderTextColor='#b5b5b5'
         />
         <TouchableOpacity onPress={() => setMostrarSenha(!mostrarSenha)}>
           <Text style={styles.olho}>
@@ -142,7 +148,7 @@ const Cadastro = ({ irParaLogin, irParaHome }) => {
             setErroLogin("");
           }}
           placeholder="Confirme sua senha"
-          placeholderTextColor="#e3e3e3"
+          placeholderTextColor='#b5b5b5'
         />
         <TouchableOpacity onPress={() => setMostrarConfirmar(!mostrarConfirmar)}>
           <Text style={styles.olho}>
@@ -174,6 +180,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: '#e3ffc2',
     padding: 20,
   },
   titulo: {
@@ -186,7 +193,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#e3e3e3',
+    borderColor: '#b5b5b5',
     borderRadius: 5,
     padding: 12,
     marginBottom: 4,
@@ -198,7 +205,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginTop: 10,
     fontWeight: 'bold',
-    color: '#e3e3e3',
+    color: '#b5b5b5',
     fontFamily: 'serif',
   },
   link: {
@@ -222,6 +229,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     fontFamily: 'serif',
+  },
+    logoContainer: {
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  logo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
   },
 });
 
