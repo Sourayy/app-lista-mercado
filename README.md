@@ -28,7 +28,7 @@ Baixe e instale o aplicativo diretamente no seu dispositivo Android:
 
 ## 🎨 **Fluxo de telas**
 
-<img src="aplicativo---lista-de-mercado/assets/fluxo_telas.png">
+<img src="aplicativo---lista-de-mercado/assets/readme-images/fluxo_telas.png"> 
 
 ---
 
