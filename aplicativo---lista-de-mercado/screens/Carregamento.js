@@ -1,79 +1,91 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { View, StyleSheet, Text, Animated, Easing, Image } from 'react-native';
-//deu certo??
-const DURACAO_MS = 3000;
+import { View, StyleSheet, Animated, Easing, Image, ImageBackground } from 'react-native';
+import Logo from '../assets/Logo.png';
+
+const DURACAO_MS = 4000;
 
 export default function Carregamento({ aoConcluir }) {
   const progressoAnimado = useRef(new Animated.Value(0)).current;
+  const [larguraBox, setLarguraBox] = useState(0);
 
   useEffect(() => {
-    Animated.timing(progressoAnimado, {
-      toValue: 1,
-      duration: DURACAO_MS,
-      easing: Easing.linear,
-      useNativeDriver: false,
-    }).start(() => {
-      aoConcluir(); // VOLTA PARA O APP.JS
-    });
-  }, []);
-
-  const larguraInterpolada = progressoAnimado.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0%', '100%'],
-  });
+    if (larguraBox > 0) {
+      Animated.timing(progressoAnimado, {
+        toValue: larguraBox,
+        duration: DURACAO_MS,
+        easing: Easing.linear,
+        useNativeDriver: false,
+      }).start(() => {
+        if (typeof aoConcluir === "function") {
+          aoConcluir();
+        }
+      });
+    }
+  }, [larguraBox]);
 
   return (
-    <View style={styles.container}>
-      <Image
-        source={require('../assets/imagem-carregamento.png')}
-        style={styles.imagem}
-      />
+    <ImageBackground
+      source={require('../assets/background.png')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <View style={styles.overlay}>
+        <View style={styles.container}>
 
-      <View style={styles.progressBox}>
-        <Animated.View
-          style={[styles.progressBar, { width: larguraInterpolada }]}
-        />
+          <Image source={Logo} style={styles.logo} />
+
+          <View
+            style={styles.progressBox}
+            onLayout={(e) => setLarguraBox(e.nativeEvent.layout.width)}
+          >
+            <Animated.View
+              style={[
+                styles.progressBar,
+                { width: progressoAnimado }
+              ]}
+            />
+          </View>
+
+        </View>
       </View>
-
-      <Text style={styles.subtitulos}>Carregando...</Text>
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.55)",
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#e3ffc2',
+    justifyContent: "center",
     padding: 20,
   },
-  imagem: {
-  width: 300,
-  height: 200,
-  alignSelf: 'center',
-  marginBottom: 10, 
-  borderRadius: 10,
-},
+  logo: {
+    width: 250,
+    height: 200,
+    alignSelf: "center",
+    marginBottom: 80,
+    borderRadius: 10,
+  },
   progressBox: {
-  height: 25,
-  width: '85%',
-  backgroundColor: '#fee6e5',
+  height: 28,
+  width: "85%",
+  backgroundColor: "#fee6e5",
   borderRadius: 7,
-  overflow: 'hidden',
-  borderWidth: 1,
-  borderColor: '#e0e0e0',
-  alignSelf: 'center',
-  marginTop: 80, 
+  overflow: "hidden",
+  alignSelf: "center",
+  borderWidth: 3,
+  borderColor: "#d18a87", 
 },
-
-  progressBar: { height: '100%', backgroundColor: '#f3bab7' },
-  subtitulos: {
-    fontSize: 17,
-    textAlign: 'center',
-    marginTop: 10,
-    fontWeight: 'bold',
-    fontFamily: 'serif',
-    color: '#9a9c95',
-  
+  progressBar: {
+    height: "100%",
+    backgroundColor: "#f3bab7",
   },
 });
