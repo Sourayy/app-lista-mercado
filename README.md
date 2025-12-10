@@ -13,6 +13,20 @@ Aplicativo de organização de lista de compras de mercado, simples, divertido e
 
 ---
 
+## 📲 **Instalação do APK**
+Baixe e instale o aplicativo diretamente no seu dispositivo Android:
+
+📦 **Download do APK:**  
+👉 [Clique aqui para baixar o Foodlist (.apk)](https://expo.dev/artifacts/eas/gXHUpZmMC8hhFyhefVvzV3.apk)
+
+---
+
+## 🎨 **Protótipo Inicial**
+
+<img src="aplicativo---lista-de-mercado/assets/Wireframe App_Lista_Mercado.png">
+
+---
+
 ## 🎯 **Objetivo do Projeto**
 O **Foodlist** tem como objetivo criar um aplicativo simples, divertido e visualmente atraente, que ajude as pessoas a organizar sua lista de compras do mercado.  
 O usuário pode montar listas gerais ou listas personalizadas por cômodos da casa, como **cozinha**, **banheiro**, **lavanderia**, entre outros.
