@@ -91,7 +91,7 @@ Isso cria uma gamificação divertida e incentiva o uso contínuo do app.
 
 ## 📱 **Demonstração**
 
-📹 _Demonstração completa do aplicativo:_ [link do vídeo](#)
+📹 _Demonstração completa do aplicativo:_ [link do vídeo](https://youtu.be/k2DSrgeTVZw?si=oXriqIjAccZb34-3)
 
 ---
 
