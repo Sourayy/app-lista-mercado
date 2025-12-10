@@ -23,8 +23,7 @@ Baixe e instale o aplicativo diretamente no seu dispositivo Android:
 
 ## 🎨 **Protótipo Inicial**
 
-<img src="aplicativo---lista-de-mercado/assets/Wireframe App_Lista_Mercado.png">
-
+<img src="aplicativo---lista-de-mercado/assets/readme-images/Wireframe%20App_Lista_Mercado.png"> 
 ---
 
 ## 🎨 **Fluxo de telas**
