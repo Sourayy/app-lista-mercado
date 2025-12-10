@@ -27,6 +27,12 @@ Baixe e instale o aplicativo diretamente no seu dispositivo Android:
 
 ---
 
+## 🎨 **Fluxo de telas**
+
+<img src="aplicativo---lista-de-mercado/assets/fluxo_telas.png">
+
+---
+
 ## 🎯 **Objetivo do Projeto**
 O **Foodlist** tem como objetivo criar um aplicativo simples, divertido e visualmente atraente, que ajude as pessoas a organizar sua lista de compras do mercado.  
 O usuário pode montar listas gerais ou listas personalizadas por cômodos da casa, como **cozinha**, **banheiro**, **lavanderia**, entre outros.
